@@ -37,10 +37,6 @@ let rendererConfig = {
         exclude: /node_modules/
       },
       {
-        test: /\.json$/,
-        use: 'json-loader'
-      },
-      {
         test: /\.node$/,
         use: 'node-loader'
       },

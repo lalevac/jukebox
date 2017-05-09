@@ -1,4 +1,4 @@
-# jukebox
+# Jukebox
 
 > A little jukebox client.
 

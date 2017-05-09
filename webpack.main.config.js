@@ -19,10 +19,6 @@ let mainConfig = {
         exclude: /node_modules/
       },
       {
-        test: /\.json$/,
-        loader: 'json-loader'
-      },
-      {
         test: /\.node$/,
         loader: 'node-loader'
       }
