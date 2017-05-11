@@ -1,0 +1,34 @@
+// Global helper classes
+
+.no-padding-left {
+  padding-left: 0 !important;
+}
+
+.no-padding-right {
+  padding-right: 0 !important;
+}
+
+.no-padding-top {
+  padding-top: 0 !important;
+}
+
+.no-padding-bottom {
+  padding-bottom: 0 !important;
+}
+
+.no-padding-horizontal {
+  @extend .no-padding-left;
+  @extend .no-padding-right;
+}
+
+.no-padding-vertical {
+  @extend .no-padding-top;
+  @extend .no-padding-bottom;
+}
+
+.no-padding {
+  @extend .no-padding-top;
+  @extend .no-padding-right;
+  @extend .no-padding-bottom;
+  @extend .no-padding-left;
+}
