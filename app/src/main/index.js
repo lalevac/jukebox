@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
@@ -13,7 +13,12 @@ function createWindow () {
    */
   mainWindow = new BrowserWindow({
     height: 600,
-    width: 800
+    width: 800,
+    title: 'Jukebox',
+    frame: false,
+    maximizable: false,
+    fullscreenable: false,
+    backgroundColor: '#2c3e50'
   })
 
   mainWindow.loadURL(winURL)
@@ -38,4 +43,12 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+ipcMain.on('app-close', () => {
+  app.quit()
+})
+
+ipcMain.on('app-minimize', () => {
+  mainWindow.minimize()
 })
