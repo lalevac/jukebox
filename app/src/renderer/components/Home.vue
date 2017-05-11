@@ -2,11 +2,11 @@
   <div id='home'>
     <div class='container-fluid'>
       <div class='row'>
-        <div class='col-sm-7 no-padding-horizontal'>
+        <div class='col-xs-7 no-padding-horizontal'>
           <current-track></current-track>
         </div>
 
-        <div class='col-sm-5 no-padding-horizontal'>
+        <div class='col-xs-5 no-padding-horizontal'>
           <track-list></track-list>
         </div>
       </div>

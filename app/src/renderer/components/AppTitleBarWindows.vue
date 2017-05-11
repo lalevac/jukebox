@@ -82,6 +82,7 @@
         &:hover {
           &.close-button {
             background: $pomegranate;
+            color: $silver;
           }
 
           &.minimize-button {
