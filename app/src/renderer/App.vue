@@ -17,4 +17,9 @@
 
 <style lang='scss'>
   @import '../assets/styles.scss';
+
+  body,
+  html {
+    overflow: hidden;
+  }
 </style>

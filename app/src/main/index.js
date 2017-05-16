@@ -12,10 +12,11 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 600,
+    height: 475,
     width: 800,
     title: 'Jukebox',
     frame: false,
+    resizable: false,
     maximizable: false,
     fullscreenable: false,
     backgroundColor: '#2c3e50'
