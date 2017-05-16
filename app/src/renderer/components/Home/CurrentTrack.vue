@@ -3,9 +3,11 @@
       <section class='track-info'>
           <img class="album-cover" :src="track.urlCoverMedium" />
 
-          <p class="track-name" v-text="track.trackName"></p>
-          <p class="album-name" v-text="track.albumName"></p>
-          <p class="artist-name" v-text="track.artistName"></p>
+          <div class="track-info-container">
+              <p class="track-name" v-text="track.trackName"></p>
+              <p class="album-name" v-text="track.albumName"></p>
+              <p class="artist-name" v-text="track.artistName"></p>
+          </div>
       </section>
 
       <section class='track-progress'>
@@ -13,8 +15,8 @@
               <div class='progress-bar' :style='trackPositionStyle'></div>
           </div>
           <div class='progress-time'>
-              <div class='current-progress' v-text='currentTrackTime'></div>
-              <div class='track-length' v-text='totalTrackLength'></div>
+              <p class='current-progress' v-text='currentTrackTime'></p>
+              <p class='track-length' v-text='totalTrackLength'></p>
           </div>
       </section>
   </div>
@@ -84,53 +86,74 @@
 
   #current-track {
     display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
+    flex-direction: column;
+
     background: $wet-asphalt;
-    padding: 50px;
+    color: $silver;
     height: 440px;
 
-    .track-info {
+    section.track-info {
       display: flex;
-      flex-direction: column;
-      flex-wrap: wrap;
+      flex: 2 0;
+      flex-direction: row;
+      padding: 25px;
 
       img {
-        display: flex;
-        width: 200px;
-        height: 100%;
+        width: 150px;
+        height: 150px;
         border-radius: 3px;
       }
 
-      p {
-        display: flex;
+      .track-info-container {
+          display: flex;
+          flex-direction: column;
+          height: 150px;
+          margin-left: 30px;
+
+          p {
+              font-size: 14px;
+              display: inline-flex;
+              flex: 1 0;
+              align-items: center;
+              margin: 0;
+
+              &.track-name {
+                  font-size: 18px;
+              }
+          }
       }
     }
 
-    .track-progress {
+    section.track-progress {
       display: flex;
-      flex: 1 0;
+      flex: 1 1;
       flex-direction: column;
-      align-self: flex-end;
+      background: $midnight-blue;
+      max-height: 105px;
+      padding: 40px 25px;
 
       .progress {
-        margin-bottom: 5px;
-        border-radius: 3px;
+          height: 30px;
+          margin-bottom: 5px;
+          border-radius: 3px;
       }
 
       .progress-time {
         display: flex;
         flex-direction: row;
 
-        .current-progress {
-          display: inline-flex;
-          flex: 1 0;
+        p {
+            display: inline-flex;
+            flex: 1 0;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        p.current-progress {
           justify-content: flex-start;
         }
 
-        .track-length {
-          display: inline-flex;
-          flex: 1 0;
+        p.track-length {
           justify-content: flex-end;
         }
       }
