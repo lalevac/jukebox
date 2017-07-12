@@ -32,7 +32,13 @@ function createWindow () {
   console.log('mainWindow opened')
 }
 
-app.on('ready', createWindow)
+app.on('ready', () => {
+    createWindow()
+
+    let spotifyWindow = new BrowserWindow({ width: 800, height: 600 })
+    spotifyWindow.loadURL('http://www.google.ca/')
+    spotifyWindow.show()
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "designmodo-flat-ui": "^2.3.0",
+    "spotify-web-api-node": "^2.4.0",
     "vue-strap": "github:wffranco/vue-strap"
   }
 }
