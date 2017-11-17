@@ -23,11 +23,11 @@
 </template>
 
 <script>
-  export default {
+export default {
     data() {
-      return {
+        return {
         currentTrackPosition: 0,
-        track: {
+            track: {
           trackSID: '4t6vrJg7GcUELCAxHX1z5W',
           artistSID: '5INjqkS1o8h1imAzPqGZBb',
           albumSID: '78FAAvXmfdj0VKUuUEYeoV',
@@ -43,32 +43,32 @@
 
           dislikeCount: 0,
           likeCount: 0
+			}
         }
-      }
     },
 
     computed: {
-      trackPositionStyle() {
+        trackPositionStyle() {
         return 'width: ' + (this.track.trackLength - this.currentTrackPosition) / this.track.trackLength * 100 + '%'
-      },
+        },
 
-      currentTrackTime() {
+        currentTrackTime() {
         return this.formatTime(this.currentTrackPosition)
-      },
+        },
 
-      totalTrackLength() {
+        totalTrackLength() {
         return this.formatTime(this.track.trackLength)
-      }
+        }
     },
 
     methods: {
-      formatTime(time) {
-        const padding = '00';
+        formatTime(time) {
+            const padding = '00';
         let minutes = Math.floor(time / 60)
         let seconds = (padding + (time % 60)).slice(-padding.length)
 
-        return minutes + ':' + seconds
-      }
+            return minutes + ':' + seconds
+        }
     },
 
     created() {
@@ -78,13 +78,13 @@
         this.currentTrackPosition--
       }, 1000);
     }
-  }
+}
 </script>
 
 <style lang='scss'>
-  @import '../../../assets/flat-ui/variables';
+@import '../../../assets/variables/variables';
 
-  #current-track {
+#current-track {
     display: flex;
     flex-direction: column;
 

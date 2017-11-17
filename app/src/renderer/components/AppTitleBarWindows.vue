@@ -14,23 +14,23 @@
 </template>
 
 <script>
-  export default {
+export default {
     methods: {
-      doMinimize() {
+        doMinimize() {
         this.$electron.ipcRenderer.send('app-minimize')
-      },
+        },
 
-      doClose() {
+        doClose() {
         this.$electron.ipcRenderer.send('app-close')
-      }
+        }
     }
-  }
+}
 </script>
 
 <style lang='scss'>
-  @import '../../assets/flat-ui/variables';
+@import './../../assets/variables/variables';
 
-  #app-title-bar-windows {
+#app-title-bar-windows {
     -webkit-user-select: none;
     -webkit-app-region: drag;
 
@@ -40,31 +40,30 @@
     width: 100%;
     height: 100%;
 
+	background: $midnight-blue;
+	color: $silver;
+
     .title-bar-icon {
-      display: inline-flex;
+        display: inline-flex;
 
       a {
         display: inline-flex;
 
         align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 35px;
-
-        &:hover {
-          color: $link-color;
+            justify-content: center;
+            width: 40px;
+            height: 35px;
         }
-      }
     }
 
     .title-bar-title {
-      display: inline-flex;
+        display: inline-flex;
       flex: 5 0 0;
       align-items: center;
-      justify-content: center;
+        justify-content: center;
 
-      font-size: 15px;
-      color: $link-color;
+        font-size: 15px;
+        color: $clouds;
     }
 
     .title-bar-controls {
@@ -89,9 +88,8 @@
             background: $wet-asphalt;
           }
         }
-      }
+        }
     }
 
-
-  }
+}
 </style>

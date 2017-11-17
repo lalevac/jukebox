@@ -7,6 +7,9 @@
 </template>
 
 <script>
+	import 'bootstrap/dist/css/bootstrap.css'
+	import 'bootstrap-vue/dist/bootstrap-vue.css'
+	import 'flat-ui/css/flat-ui.css'
     import spotify from './spotify'
     import AppTitleBarWindows from 'components/AppTitleBarWindows'
     import BrowserWindow from 'electron'
@@ -19,7 +22,7 @@
             test() {
                 spotify.testModule()
             }
-        }
+		}
     }
 </script>
 
