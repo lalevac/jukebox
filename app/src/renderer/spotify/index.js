@@ -1,32 +1,33 @@
-import { EventEmitter } from 'events'
+import {EventEmitter} from 'events'
+import fs from 'fs'
 
 const spotify = new EventEmitter()
 const SpotifyWebApi = require('spotify-web-api-node')
 
 const spotifyApi = new SpotifyWebApi({
-    clientId : '022ffa404ba049c391c9c780734cb43d',
-    clientSecret : 'c62722cbf31341cebc33512116fee493',
-    redirectUri : 'http://127.0.0.1/'
+    clientId: '022ffa404ba049c391c9c780734cb43d',
+    clientSecret: 'c62722cbf31341cebc33512116fee493',
+    redirectUri: 'https://www.modonoob.net/spotify/'
 })
 
-const authorizationCode = 'AQDboIDH389txXEiaTkeaftOhscggt13hGJjITj4jTmEXgBLHWtPS5Ggwuh0niSAizF8tF2seS3rgzLLoVLwfxOHj_wu8vSHqmyc3MYRjui0eA5A1beVVa_hpWOY-Qd2rPppdSZEl5Q-YUuvltXOn02-LQYhZvGbXzMQqGiZSdhRS9JRnubdyAKWlBjc2Ram9iqSHNqxImnrNCxn80yi5g2R10M'
+spotify.init = (callback) => {
+	let accessToken = loadTokenFromDisk('.access')
+    let refreshToken = loadTokenFromDisk('.refresh')
 
-spotify.init = () => {
-    spotifyApi.authorizationCodeGrant(authorizationCode)
-        .then((data) => {
-            console.info('Access token obtained from authorization code.')
+    spotify.mustAuthenticate = !!!refreshToken && !!!accessToken
 
-            // Save the access token for future calls.
-            spotifyApi.setAccessToken(data.body['access_token'])
-            spotifyApi.setRefreshToken(data.body['refresh_token'])
-        }, (error) => {
-            console.error('Could not get credentials.')
-            console.error(error)
-        })
+    callback()
+}
+
+spotify.getMyCurrentPlayingTrack = () => {
+	return spotify.refreshToken()
+		.then(() => {
+			return spotifyApi.getMyCurrentPlayingTrack()
+		})
 }
 
 spotify.refreshToken = () => {
-    spotifyApi.refreshAccessToken()
+    return spotifyApi.refreshAccessToken()
         .then((data) => {
             console.info('Access token refreshed.')
         }, (error) => {
@@ -35,11 +36,66 @@ spotify.refreshToken = () => {
         })
 }
 
-spotify.testModule = () => {
-    spotifyApi.refreshToken()
+spotify.getAuthorizeUrl = () => {
+    return spotifyApi.createAuthorizeURL(['user-library-read',
+									  	  'user-read-currently-playing',
+									  	  'user-modify-playback-state',
+									  	  'user-read-recently-played'])
 }
 
-// Initializes the module.
-//spotify.init()
+spotify.setAuthorizationCode = (authCode, callback) => {
+    spotifyApi.authorizationCodeGrant(authCode)
+        .then((data) => {
+			let accessToken = data.body['access_token']
+            let refreshToken = data.body['refresh_token']
+
+            console.info('Access and refresh tokens obtained from authorization code.')
+
+            // Save the access token for future calls.
+            spotifyApi.setAccessToken(accessToken)
+            spotifyApi.setRefreshToken(refreshToken)
+
+			writeTokenToDisk('.access', accessToken)
+            writeTokenToDisk('.refresh', refreshToken)
+
+			callback()
+        }, (error) => {
+            console.error('Could not grant with authorization code.')
+            console.error(error)
+        })
+}
+
+spotify.shouldAskUserCredentials = () => {
+    if (spotify.mustAuthenticate)
+        console.log('We must ask the user for authentication!')
+    else
+        console.log('No need to ask the user for authentication')
+
+    return spotify.mustAuthenticate
+}
+
+function loadTokenFromDisk(tokenName) {
+	let tokenContent
+
+	try {
+		tokenContent = fs.readFileSync(tokenName, 'utf8')
+
+		console.log('Successfully loaded "' + tokenName + '" token from disk. Token: ' + tokenContent)
+	}
+	catch(err) {
+		console.error('Could not read the "' + tokenName + '" token from disk Err: ' + err)
+	}
+
+	return tokenContent
+}
+
+function writeTokenToDisk(tokenName, tokenContent) {
+    fs.writeFile(tokenName, tokenContent, (err) => {
+        if (err)
+            console.error('Could not write "' + tokenName + '" token to disk D: Err: ' + err)
+        else
+            console.log('Successfully wrote "' + tokenName + '" token to disk.')
+    })
+}
 
 export default spotify

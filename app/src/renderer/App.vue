@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <button @click='test()' id='btn'>CALL!</button>
         <app-title-bar-windows></app-title-bar-windows>
         <router-view></router-view>
     </div>
@@ -10,18 +9,26 @@
 	import 'bootstrap/dist/css/bootstrap.css'
 	import 'bootstrap-vue/dist/bootstrap-vue.css'
 	import 'flat-ui/css/flat-ui.css'
+
+	import {ipcRenderer} from 'electron'
     import spotify from './spotify'
     import AppTitleBarWindows from 'components/AppTitleBarWindows'
-    import BrowserWindow from 'electron'
 
     export default {
         components: {
             AppTitleBarWindows
         },
-        methods: {
-            test() {
-                spotify.testModule()
-            }
+
+		mounted() {
+			spotify.init(() => {
+				ipcRenderer.send('app:spotify-authentication:start', spotify.getAuthorizeUrl())
+			})
+
+			ipcRenderer.on('app:spotify-authentication:done', (event, authCode) => {
+				spotify.setAuthorizationCode(authCode, () => {
+					spotify.refreshToken()
+				})
+			})
 		}
     }
 </script>
