@@ -12,7 +12,7 @@ const winURL = process.env.NODE_ENV === 'development'
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		height: 475,
+		height: 435,
 		width: 800,
 		title: 'Jukebox',
 		frame: false,

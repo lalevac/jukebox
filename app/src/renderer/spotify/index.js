@@ -10,16 +10,22 @@ const spotifyApi = new SpotifyWebApi({
     redirectUri: 'https://www.modonoob.net/spotify/'
 })
 
+spotify.loadingFinished = false
+
 spotify.init = (callback) => {
 	let accessToken = loadTokenFromDisk('.access')
     let refreshToken = loadTokenFromDisk('.refresh')
 
+	spotify.loadingFinished = false
     spotify.mustAuthenticate = !!!refreshToken && !!!accessToken
 
     callback()
 }
 
 spotify.getMyCurrentPlayingTrack = () => {
+	if (!spotify.loadingFinished)
+		return
+
 	return spotify.refreshToken()
 		.then(() => {
 			return spotifyApi.getMyCurrentPlayingTrack()
@@ -27,6 +33,9 @@ spotify.getMyCurrentPlayingTrack = () => {
 }
 
 spotify.refreshToken = () => {
+	if (!spotify.loadingFinished)
+		return
+
     return spotifyApi.refreshAccessToken()
         .then((data) => {
             console.info('Access token refreshed.')
@@ -58,6 +67,7 @@ spotify.setAuthorizationCode = (authCode, callback) => {
 			writeTokenToDisk('.access', accessToken)
             writeTokenToDisk('.refresh', refreshToken)
 
+			spotify.loadingFinished = true
 			callback()
         }, (error) => {
             console.error('Could not grant with authorization code.')
@@ -72,6 +82,10 @@ spotify.shouldAskUserCredentials = () => {
         console.log('No need to ask the user for authentication')
 
     return spotify.mustAuthenticate
+}
+
+spotify.isLoadingDone = () => {
+	return spotify.loadingFinished
 }
 
 function loadTokenFromDisk(tokenName) {
