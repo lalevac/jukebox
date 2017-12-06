@@ -19,7 +19,8 @@ function createWindow() {
 		resizable: false,
 		maximizable: false,
 		fullscreenable: false,
-		backgroundColor: '#2c3e50'
+		backgroundColor: '#2c3e50',
+        show: false
 	})
 
 	mainWindow.loadURL(winURL)
@@ -28,6 +29,10 @@ function createWindow() {
 		mainWindow = null
 		console.log('Main window closed.')
 	})
+
+    mainWindow.on('ready-to-show', () => {
+        mainWindow.show()
+    })
 
 	console.log('Main window opened.')
 }
@@ -43,7 +48,8 @@ function createSpotifyWindow(url, callback) {
 		show: false,
 		'node-integration': false,
     	'web-security': false,
-		backgroundColor: '#ffffff'
+		backgroundColor: '#ffffff',
+        show: false
 	})
 
 	spotifyWindow.loadURL(url)
@@ -52,6 +58,10 @@ function createSpotifyWindow(url, callback) {
 		spotifyWindow = null
 		console.log('Spotify authentication window closed.')
 	})
+
+    spotifyWindow.on('ready-to-show', () => {
+        spotifyWindow.show()
+    })
 
 	spotifyWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
 		let authCode = new URL(newUrl).searchParams.get('code')
@@ -70,9 +80,7 @@ function createSpotifyWindow(url, callback) {
 	})
 }
 
-app.on('ready', () => {
-    createWindow()
-})
+app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
  	if (process.platform !== 'darwin') {
@@ -95,7 +103,9 @@ ipcMain.on('app:window:minimize', () => {
 })
 
 ipcMain.on('app:spotify-authentication:start', (event, authUrl) => {
+    console.log('Start auth!')
 	createSpotifyWindow(authUrl, (authorizationCode) => {
+        console.log('Auth callback!')
 		event.sender.send('app:spotify-authentication:done', authorizationCode)
 	})
 })
