@@ -5,12 +5,13 @@ const colorThief = new ColorThief()
 const color = new EventEmitter()
 
 let currentMainColor = null
+let listeners = []
 
-color.setMainColor = (coverUrl, callback) => {
+color.setMainColor = (coverUrl) => {
   let img = new Image()
   img.onload = () => {
     currentMainColor = colorThief.getColor(img)
-    if (callback) callback()
+    notifyListeners()
   }
 
   img.crossOrigin = 'Anonymous'
@@ -42,6 +43,16 @@ color.getShiftedTextColor = (percent) => {
 
   let newColor = [shiftComponent(currentMainColor[0], percent), shiftComponent(currentMainColor[1], percent), shiftComponent(currentMainColor[2], percent)]
   return rgbToHex(getTextColor(newColor))
+}
+
+color.registerListener = (callback) => {
+  listeners.push(callback)
+}
+
+const notifyListeners = () => {
+  listeners.forEach((callback) => {
+    callback()
+  })
 }
 
 const rgbToHex = (rgb) => {

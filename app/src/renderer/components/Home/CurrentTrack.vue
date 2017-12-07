@@ -27,13 +27,15 @@
         <p class='current-progress' v-text='currentTrackTime'></p>
         <p class='track-length' v-text='totalTrackLength'></p>
       </div>
+
+      <player-controls></player-controls>
     </section>
   </section>
 
   <section class='debug ml-2 mb-2 mt-2 mr-2'>
     <div class='row'>
       <div class='col mr-1'>
-        <b-button variant='primary' @click='test()'>Get Current Track</b-button>
+        <b-button variant='primary' @click='testButton()'>Mystery Button</b-button>
       </div>
     </div>
   </section>
@@ -41,10 +43,15 @@
 </template>
 
 <script>
+import PlayerControls from './PlayerControls'
 import spotify from './../../spotify'
 import color from './../../color'
 
 export default {
+	components: {
+		PlayerControls
+	},
+
   data() {
     return {
       progress_ms: 0,
@@ -105,33 +112,31 @@ export default {
       return minutes + ':' + seconds
     },
 
-    test() {
-
+    testButton() {
+			spotify.resumePlayback()
     },
 
     updateTrackState() {
       if (!spotify.isLoadingDone())
         return
 
-      spotify.getMyCurrentPlayingTrack()
-        .then((data) => {
-          // If we have a currently playing track, we display it.
-          if (data.body.item)
-            this.progress_ms = data.body.progress_ms
-          else
-            this.progress_ms = 0
+      spotify.getMyCurrentPlayingTrack((data) => {
+				// If we have a currently playing track, we display it.
+				if (data.body.item)
+					this.progress_ms = data.body.progress_ms
+				else
+					this.progress_ms = 0
 
-					if (!this.lastTrackSid || this.lastTrackSid !== data.body.item.id) {
-						this.lastTrackSid = data.body.item.id
-						this.onTrackChange(data.body.item)
-					}
+				if (!this.lastTrackSid || this.lastTrackSid !== data.body.item.id) {
+					this.lastTrackSid = data.body.item.id
+					this.onTrackChange(data.body.item)
+				}
 
-          this.isLoading = false
-        }, (error) => {
-					onTrackChange(null)
-          this.progress_ms = 0
-          console.error(error)
-        })
+				this.isLoading = false
+			}, () => {
+				onTrackChange(null)
+				this.progress_ms = 0
+			})
     },
 
     startTrackStateUpdateLoop() {
@@ -141,8 +146,8 @@ export default {
     },
 
 		updateColors() {
-      let backgroundHex = color.getShiftedBackgroundColor(0.15)
-      let textHex = color.getShiftedTextColor(0.15)
+      let backgroundHex = color.getShiftedBackgroundColor(-0.30)
+      let textHex = color.getShiftedTextColor(-0.30)
 
       if (backgroundHex) {
         this.currentTrackStyle = `background: ${backgroundHex}; color: ${textHex};`
@@ -152,9 +157,7 @@ export default {
 		onTrackChange(newTrack) {
 			if (newTrack) {
 				this.track = newTrack
-				color.setMainColor(this.track.album.images[0].url, () => {
-					this.updateColors()
-				})
+				color.setMainColor(this.track.album.images[0].url)
 			}
 			else {
 				this.track = this.emptyTrack
@@ -164,6 +167,7 @@ export default {
 
   mounted() {
     this.startTrackStateUpdateLoop()
+		color.registerListener(this.updateColors)
   }
 }
 </script>
@@ -250,5 +254,11 @@ export default {
             }
         }
     }
+
+		section.debug {
+			button {
+				float: right;
+			}
+		}
 }
 </style>

@@ -1,4 +1,6 @@
-import {EventEmitter} from 'events'
+import {
+  EventEmitter
+} from 'events'
 import fs from 'fs'
 
 const spotify = new EventEmitter()
@@ -22,13 +24,109 @@ spotify.init = (callback) => {
   callback()
 }
 
-spotify.getMyCurrentPlayingTrack = () => {
+spotify.getMyCurrentPlayingTrack = (successCallback, errorCallback) => {
   if (!spotify.loadingFinished)
     return
 
-  return spotify.refreshToken()
+  return spotifyApi.getMyCurrentPlayingTrack()
+    .then((data) => {
+      successCallback ? successCallback(data) : null
+    }, (err) => {
+      spotify.refreshToken()
+        .then(() => {
+          spotifyApi.getMyCurrentPlayingTrack()
+            .then((data) => {
+              successCallback ?  successCallback(data) : null
+            }, (err) => {
+              console.error(err)
+              errorCallback ? errorCallback() : null
+            })
+        })
+    })
+
+}
+
+spotify.pausePlayback = (successCallback, errorCallback) => {
+  if (!spotify.loadingFinished)
+    return
+
+  return spotifyApi.pause()
     .then(() => {
-      return spotifyApi.getMyCurrentPlayingTrack()
+      successCallback ?  successCallback() : null
+    }, (err) => {
+      spotify.refreshToken()
+        .then(() => {
+          spotifyApi.pause()
+            .then(() => {
+              successCallback ?  successCallback() : null
+            }, (err) => {
+              console.error(err)
+              errorCallback ? errorCallback() : null
+            })
+        })
+    })
+}
+
+spotify.resumePlayback = (successCallback, errorCallback) => {
+  if (!spotify.loadingFinished)
+    return
+
+  return spotifyApi.play()
+    .then(() => {
+      successCallback ?  successCallback() : null
+    }, (err) => {
+      spotify.refreshToken()
+        .then(() => {
+          spotifyApi.play()
+            .then(() => {
+              successCallback ?  successCallback() : null
+            }, (err) => {
+              console.error(err)
+              errorCallback ? errorCallback() : null
+            })
+        })
+    })
+}
+
+spotify.previous = (successCallback, errorCallback) => {
+  if (!spotify.loadingFinished)
+    return
+
+  return spotifyApi.skipToPrevious()
+    .then(() => {
+      successCallback ?  successCallback() : null
+    }, (err) => {
+      spotify.refreshToken()
+        .then(() => {
+          spotifyApi.skipToPrevious()
+            .then(() => {
+              successCallback ?  successCallback() : null
+            }, (err) => {
+              console.error(err)
+              errorCallback ? errorCallback() : null
+            })
+        })
+    })
+}
+
+spotify.next = (successCallback, errorCallback) => {
+  if (!spotify.loadingFinished)
+    return
+
+  return spotifyApi.skipToNext()
+    .then(() => {
+      successCallback ?  successCallback() : null
+    }, (err) => {
+      spotify.refreshToken()
+        .then(() => {
+          spotifyApi.skipToNext()
+            .then(() => {
+              successCallback ?  successCallback() : null
+            }, (err) => {
+              console.error(err)
+              errorCallback ? errorCallback() : null
+            })
+        })
     })
 }
 
@@ -89,7 +187,7 @@ spotify.isLoadingDone = () => {
   return spotify.loadingFinished
 }
 
-function loadTokenFromDisk(tokenName) {
+const loadTokenFromDisk = (tokenName) => {
   let tokenContent
 
   try {
@@ -103,7 +201,7 @@ function loadTokenFromDisk(tokenName) {
   return tokenContent
 }
 
-function writeTokenToDisk(tokenName, tokenContent) {
+const writeTokenToDisk = (tokenName, tokenContent) => {
   fs.writeFile(tokenName, tokenContent, (err) => {
     if (err)
       console.error('Could not write "' + tokenName + '" token to disk D: Err: ' + err)

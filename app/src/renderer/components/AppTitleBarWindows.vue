@@ -32,20 +32,18 @@ export default {
       this.$electron.ipcRenderer.send('app:window:close')
     },
 
-    startColorUpdate() {
-      setInterval(() => {
-        let currentBackgroundColorHex = color.getMainBackgroundColor()
-        let currentTextColorHex = color.getMainTextColor()
+    updateColors() {
+      let currentBackgroundColorHex = color.getMainBackgroundColor()
+      let currentTextColorHex = color.getMainTextColor()
 
-        if (currentBackgroundColorHex) {
-          this.titleBarStyle = `background: ${currentBackgroundColorHex}; color: ${currentTextColorHex};`
-        }
-      }, 500)
+      if (currentBackgroundColorHex) {
+        this.titleBarStyle = `background: ${currentBackgroundColorHex}; color: ${currentTextColorHex};`
+      }
     }
   },
 
   mounted() {
-    this.startColorUpdate()
+    color.registerListener(this.updateColors)
   }
 }
 </script>
