@@ -57,10 +57,13 @@ export default {
 @import '../../../assets/variables/variables';
 
 #player-controls {
+  display: flex;
+  align-items: flex-end;
   .control-button {
     border-radius: 50%;
     border: 2px solid white;
     text-align: center;
+    margin: 5px;
 
     transition: color 0.25s ease,
                 border-color 0.25s ease;

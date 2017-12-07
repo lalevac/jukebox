@@ -107,3 +107,7 @@ ipcMain.on('app:spotify-authentication:start', (event, authUrl) => {
 		event.sender.send('app:spotify-authentication:done', authorizationCode)
 	})
 })
+
+ipcMain.on('app:window:change-title', (event, newTitle) => {
+  mainWindow.setTitle(newTitle)
+})

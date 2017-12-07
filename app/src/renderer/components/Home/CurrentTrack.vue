@@ -158,6 +158,9 @@ export default {
 			if (newTrack) {
 				this.track = newTrack
 				color.setMainColor(this.track.album.images[0].url)
+
+        let newTitle = `${this.track.name} - ${this.track.artists[0].name}`
+        this.$electron.ipcRenderer.send('app:window:change-title', newTitle)
 			}
 			else {
 				this.track = this.emptyTrack
