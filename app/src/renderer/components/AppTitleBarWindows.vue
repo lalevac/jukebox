@@ -1,29 +1,52 @@
 <template>
-<div id="app-title-bar-windows">
-    <div class='title-bar-icon'>
-        <a class='fa fa-music'></a>
-    </div>
+<div id="app-title-bar-windows" :style='titleBarStyle'>
+  <div class='title-bar-icon'>
+    <a class='fa fa-music'></a>
+  </div>
 
-    <div class='title-bar-title'>Jukebox</div>
+  <div class='title-bar-title'>Jukebox</div>
 
-    <div class="title-bar-controls">
-        <a @click="doMinimize()" class="minimize-button fa fa-minus"></a>
-        <a @click="doClose()" class="close-button fa fa-times"></a>
-    </div>
+  <div class="title-bar-controls">
+    <a @click="doMinimize()" class="minimize-button fa fa-minus"></a>
+    <a @click="doClose()" class="close-button fa fa-times"></a>
+  </div>
 </div>
 </template>
 
 <script>
-export default {
-    methods: {
-        doMinimize() {
-            this.$electron.ipcRenderer.send('app:window:minimize')
-        },
+import color from './../color'
 
-        doClose() {
-            this.$electron.ipcRenderer.send('app:window:close')
-        }
+export default {
+  data() {
+    return {
+      titleBarStyle: 'background: #2c3e50; color: #bdc3c7;'
     }
+  },
+
+  methods: {
+    doMinimize() {
+      this.$electron.ipcRenderer.send('app:window:minimize')
+    },
+
+    doClose() {
+      this.$electron.ipcRenderer.send('app:window:close')
+    },
+
+    startColorUpdate() {
+      setInterval(() => {
+        let currentBackgroundColorHex = color.getMainBackgroundColor()
+        let currentTextColorHex = color.getMainTextColor()
+
+        if (currentBackgroundColorHex) {
+          this.titleBarStyle = `background: ${currentBackgroundColorHex}; color: ${currentTextColorHex};`
+        }
+      }, 500)
+    }
+  },
+
+  mounted() {
+    this.startColorUpdate()
+  }
 }
 </script>
 
@@ -40,8 +63,10 @@ export default {
     width: 100%;
     height: 100%;
 
-	background: $midnight-blue;
-	color: $silver;
+    background: $midnight-blue;
+    color: $silver;
+    transition: background 0.25s ease,
+                color 0.25s ease;
 
     .title-bar-icon {
         display: inline-flex;
@@ -63,7 +88,7 @@ export default {
         justify-content: center;
 
         font-size: 15px;
-        color: $clouds;
+        font-weight: bold;
     }
 
     .title-bar-controls {

@@ -5,12 +5,16 @@
   "main": "./dist/main.js",
   "dependencies": {
     "babel-runtime": "^6.23.0",
-	"jquery": "^3.2.0",
     "bootstrap": "^4.0.0-beta.2",
     "bootstrap-vue": "^1.0.2",
+    "canvas-prebuilt": "^1.6.0",
+    "color-thief-browser": "^2.0.2",
+    "dominant-color": "0.0.1",
     "flat-ui": "^2.1.1",
+    "jquery": "^3.2.0",
+    "node-vibrant": "^3.0.0",
     "spotify-web-api-node": "^2.5.0",
-    "vue": "^2.1.10",
+    "vue": "^2.4.2",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.1.2"
   },

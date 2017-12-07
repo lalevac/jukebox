@@ -13,3 +13,5 @@ thumbs.db
 \.access
 
 \.refresh
+
+app/package-lock\.json

@@ -47,9 +47,9 @@ function createSpotifyWindow(url, callback) {
 		fullscreenable: false,
 		show: false,
 		'node-integration': false,
-    	'web-security': false,
-		backgroundColor: '#ffffff',
-        show: false
+  	'web-security': false,
+	  backgroundColor: '#ffffff',
+    show: false
 	})
 
 	spotifyWindow.loadURL(url)
@@ -103,9 +103,7 @@ ipcMain.on('app:window:minimize', () => {
 })
 
 ipcMain.on('app:spotify-authentication:start', (event, authUrl) => {
-    console.log('Start auth!')
 	createSpotifyWindow(authUrl, (authorizationCode) => {
-        console.log('Auth callback!')
 		event.sender.send('app:spotify-authentication:done', authorizationCode)
 	})
 })
