@@ -23,7 +23,7 @@ color.setMainColor = (coverUrl) => {
       let diff = Math.abs((currentMainColor[0] - colorPalette[i][0]) + (currentMainColor[1] - colorPalette[i][1]) + (currentMainColor[2] - colorPalette[i][2]))
 
       // 50 is a completely arbitrary number obtained from trial and error.
-      if (diff > 50) {
+      if (diff > 75) {
         currentAccentColor = colorPalette[i]
         break;
       }
@@ -95,7 +95,7 @@ const getTextColor = (color) => {
 
   let a = 1 - (0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2]) / 255
 
-  textColor = a < 0.5 ? 70 : 240;
+  textColor = a < 0.5 ? 45 : 240;
   return [textColor, textColor, textColor]
 }
 

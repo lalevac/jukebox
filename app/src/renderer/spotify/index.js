@@ -130,6 +130,48 @@ spotify.next = (successCallback, errorCallback) => {
     })
 }
 
+spotify.setShuffle = (state, successCallback, errorCallback) => {
+  if (!spotify.loadingFinished)
+    return
+
+  return spotifyApi.setShuffle(state)
+    .then(() => {
+      successCallback ?  successCallback() : null
+    }, (err) => {
+      spotify.refreshToken()
+        .then(() => {
+          spotifyApi.setShuffle(state)
+            .then(() => {
+              successCallback ?  successCallback() : null
+            }, (err) => {
+              console.error(err)
+              errorCallback ? errorCallback() : null
+            })
+        })
+    })
+}
+
+spotify.setRepeat = (state, successCallback, errorCallback) => {
+  if (!spotify.loadingFinished)
+    return
+
+  return spotifyApi.setRepeat(state)
+    .then(() => {
+      successCallback ?  successCallback() : null
+    }, (err) => {
+      spotify.refreshToken()
+        .then(() => {
+          spotifyApi.setRepeat(state)
+            .then(() => {
+              successCallback ?  successCallback() : null
+            }, (err) => {
+              console.error(err)
+              errorCallback ? errorCallback() : null
+            })
+        })
+    })
+}
+
 spotify.refreshToken = () => {
   if (!spotify.loadingFinished)
     return
