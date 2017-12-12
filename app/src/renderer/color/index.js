@@ -5,27 +5,32 @@ const colorThief = new ColorThief()
 const color = new EventEmitter()
 
 let currentMainColor = null
+let currentTextColor = null
 let currentAccentColor = null
 let listeners = []
 
 color.setMainColor = (coverUrl) => {
   let img = new Image()
   img.onload = () => {
-    currentMainColor = colorThief.getColor(img)
+    currentAccentColor = null
 
-    /* In order to decide which of the color in the palette is the most visible,
+    currentMainColor = colorThief.getColor(img)
+    currentTextColor = getTextColor(currentMainColor)
+
+    /*
+       In order to decide which of the color in the palette is the most visible,
        we're going to compute the sum of the difference between each component.
        This way, we'll know if the color is too similar to the main color to be
        our accent color.
     */
     let colorPalette = colorThief.getPalette(img, 8)
     for (var i = 0; i < colorPalette.length; i++) {
-      let diff = Math.abs((currentMainColor[0] - colorPalette[i][0]) + (currentMainColor[1] - colorPalette[i][1]) + (currentMainColor[2] - colorPalette[i][2]))
+      let potentialAccentColorDiff = Math.abs((currentMainColor[0] - colorPalette[i][0]) + (currentMainColor[1] - colorPalette[i][1]) + (currentMainColor[2] - colorPalette[i][2]))
 
-      // 50 is a completely arbitrary number obtained from trial and error.
-      if (diff > 75) {
+      // 75 is a completely arbitrary number obtained from trial and error.
+      if (potentialAccentColorDiff > 100) {
         currentAccentColor = colorPalette[i]
-        break;
+        break
       }
     }
 
@@ -41,10 +46,11 @@ color.getMainBackgroundColor = () => {
 }
 
 color.getMainTextColor = () => {
-  if (!currentMainColor)
-    return null
+  return currentTextColor ? rgbToHex(currentTextColor) : null
+}
 
-  return rgbToHex(getTextColor(currentMainColor))
+color.getAccentColor = () => {
+  return currentAccentColor ? rgbToHex(currentAccentColor) : null
 }
 
 color.getShiftedBackgroundColor = (percent) => {
@@ -61,10 +67,6 @@ color.getShiftedTextColor = (percent) => {
 
   let newColor = [shiftComponent(currentMainColor[0], percent), shiftComponent(currentMainColor[1], percent), shiftComponent(currentMainColor[2], percent)]
   return rgbToHex(getTextColor(newColor))
-}
-
-color.getAccentColor = () => {
-  return currentAccentColor ? rgbToHex(currentAccentColor) : null
 }
 
 color.registerListener = (callback) => {
