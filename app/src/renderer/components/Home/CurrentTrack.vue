@@ -13,23 +13,23 @@
     </div>
   </section>
 
-  <section class='track-info-container'>
+  <section class='current-track-container'>
     <section class='album-art'>
       <img :src="track.album.images[0].url" />
     </section>
 
-    <section class='track-info'>
-      <p class="track-name mb-2" v-text="track.name"></p>
-      <p class="album-name" v-text="track.album.name"></p>
-      <p class="artist-name" v-text="track.artists[0].name"></p>
+    <div class='track-info-container'>
+      <section class='track-info'>
+        <p class="track-name mb-2" v-text="track.name"></p>
+        <p class="artist-name" v-text="track.artists[0].name"></p>
+        <p class="album-name" v-text="track.album.name"></p>
 
-      <div class='progress-time'>
-        <p class='current-progress' v-text='currentTrackTime'></p>
-        <p class='track-length' v-text='totalTrackLength'></p>
-      </div>
-
+        <div class='progress-time'>
+          <p class='current-progress' v-text='currentTrackTime + " / " + totalTrackLength'></p>
+        </div>
+      </section>
       <player-controls></player-controls>
-    </section>
+    </div>
   </section>
 
   <section class='debug ml-2 mb-2 mt-2 mr-2'>
@@ -46,6 +46,7 @@
 import PlayerControls from './PlayerControls'
 import spotify from './../../spotify'
 import color from './../../color'
+import ProgressBar from 'progressbar.js'
 
 export default {
 	components: {
@@ -83,13 +84,15 @@ export default {
       trackStateUpdateTimer: null,
       isLoading: true,
 			lastTrackSid: null,
-			currentTrackStyle: 'background: #34495e; color: #bdc3c7;'
+			currentTrackStyle: 'background: #34495e; color: #bdc3c7;',
+      currentProgressBarStyle: 'background: #bdc3c7;'
     }
   },
 
   computed: {
     trackPositionStyle() {
-      return 'width: ' + (100 - ((this.track.duration_ms - this.progress_ms) / this.track.duration_ms * 100)) + '%'
+      let progressPercent = (100 - ((this.track.duration_ms - this.progress_ms) / this.track.duration_ms * 100)) + '%'
+      return `width: ${progressPercent}; ${this.currentProgressBarStyle}`
     },
 
     currentTrackTime() {
@@ -140,17 +143,20 @@ export default {
     },
 
     startTrackStateUpdateLoop() {
+      clearInterval(this.trackStateUpdateTimer)
       this.trackStateUpdateTimer = setInterval(() => {
         this.updateTrackState()
       }, 1000)
     },
 
 		updateColors() {
-      let backgroundHex = color.getShiftedBackgroundColor(-0.30)
-      let textHex = color.getShiftedTextColor(-0.30)
+      let backgroundHex = color.getShiftedBackgroundColor(-0.10)
+      let textHex = color.getShiftedTextColor(-0.10)
+      let accentHex = color.getAccentColor()
 
       if (backgroundHex) {
         this.currentTrackStyle = `background: ${backgroundHex}; color: ${textHex};`
+        this.currentProgressBarStyle = `background: ${accentHex};`
       }
     },
 
@@ -179,6 +185,7 @@ export default {
 @import '../../../assets/variables/variables';
 
 #current-track {
+    position: relative;
     display: flex;
     flex-direction: column;
 
@@ -206,20 +213,27 @@ export default {
     }
 
     section.track-progress {
+        position: absolute;
+        top: -3px;
+        left: 0;
+
         display: flex;
         flex: 1 1;
         flex-direction: column;
         min-height: 3px;
 
+        height: 3px;
+        width: 100%;
+
         .progress {
             min-height: 3px;
             height: 30px;
             border-radius: 0;
-            background: $midnight-blue;
+            background: transparent;
         }
     }
 
-    section.track-info-container {
+    section.current-track-container {
         display: flex;
         flex-direction: row;
 
@@ -233,32 +247,53 @@ export default {
             }
         }
 
-        section.track-info {
+        div.track-info-container {
+          display: flex;
+          flex-direction: column;
+          width: 400px;
+
+          section.track-info {
             display: flex;
             flex: 2 0;
             flex-direction: column;
             padding: 15px;
 
             p {
-                margin: 0;
-                line-height: 1;
+              margin: 0;
+              line-height: 40px;
 
-                &.track-name {
-                    font-size: 20px;
-                }
+              &.track-name {
+                  font-size: 25px;
+              }
 
-                &.album-name {
-                    font-size: 14px;
-                }
+              &.album-name {
+                  opacity: 0.5;
+                  font-size: 20px;
+              }
 
-                &.artist-name {
-                    font-size: 14px;
-                }
+              &.artist-name {
+                  opacity: 0.8;
+                  font-size: 20px;
+              }
             }
+
+            div.progress-time {
+              margin-top: auto;
+
+              p {
+                line-height: 20px;
+              }
+            }
+          }
         }
     }
 
 		section.debug {
+      display: none;
+      position: absolute;
+      right: 0;
+      bottom: 100px;
+
 			button {
 				float: right;
 			}

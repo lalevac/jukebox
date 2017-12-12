@@ -1,8 +1,10 @@
 <template>
-  <div id='player-controls'>
-    <div class='control-button back fa fa-step-backward' @click='back()' :style='buttonStyle'></div>
+  <div id='player-controls' :style='backgroundStyle'>
+    <div class='control-button back' @click='back()' :style='buttonStyle'><span class='fa fa-random'></span></div>
+    <div class='control-button back' @click='back()' :style='buttonStyle'><span class='fa fa fa-step-backward'></span></div>
     <div class='control-button play' @click='togglePlayback()' :style='buttonStyle'><span :class='iconPlayback'></span></div>
-    <div class='control-button forward fa fa-step-forward' @click='forward()' :style='buttonStyle'></div>
+    <div class='control-button forward' @click='forward()' :style='buttonStyle'><span class='fa fa-step-forward'></span></div>
+    <div class='control-button forward' @click='forward()' :style='buttonStyle'><span class='fa fa-repeat'></span></div>
   </div>
 </template>
 
@@ -15,14 +17,17 @@ export default {
     return {
       isPlaying: true,
       iconPlayback: 'fa fa-pause',
-      buttonStyle: 'color: #bdc3c7; border-color: #bdc3c7;'
+      buttonStyle: 'color: #bdc3c7; border-color: #bdc3c7;',
+      backgroundStyle: 'background: #34495e'
     }
   },
 
   methods: {
     updateColors() {
-      let textColorHex = color.getShiftedTextColor(-0.3)
+      let backgroundColorHex = color.getMainBackgroundColor()
+      let textColorHex = color.getMainTextColor()
       this.buttonStyle = `color: ${textColorHex}; border-color: ${textColorHex};`
+      this.backgroundStyle = `background: ${backgroundColorHex};`
     },
 
     togglePlayback() {
@@ -59,30 +64,27 @@ export default {
 #player-controls {
   display: flex;
   align-items: flex-end;
+  width: 100%;
+  height: 100px;
+  padding: 20px 50px;
+
+  transition: background 0.25s ease;
+
   .control-button {
-    border-radius: 50%;
-    border: 2px solid white;
     text-align: center;
     margin: 5px;
+    width: 50px;
+    height: 50px;
+    line-height: 60px;
 
-    transition: color 0.25s ease,
-                border-color 0.25s ease;
+    transition: color 0.25s ease;
 
     &:hover {
       cursor: pointer;
     }
 
-    &.forward,
-    &.back {
-      width: 40px;
-      height: 40px;
-      line-height: 40px;
-    }
-
-    &.play {
-      width: 50px;
-      height: 50px;
-      line-height: 50px;
+    span.fa {
+      font-size: 30px;
     }
   }
 }

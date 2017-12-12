@@ -4,7 +4,7 @@
     <a class='fa fa-music'></a>
   </div>
 
-  <div class='title-bar-title'>Jukebox</div>
+  <div class='title-bar-title'>Spotify</div>
 
   <div class="title-bar-controls">
     <a @click="doMinimize()" class="minimize-button fa fa-minus"></a>

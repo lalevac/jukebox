@@ -5,12 +5,30 @@ const colorThief = new ColorThief()
 const color = new EventEmitter()
 
 let currentMainColor = null
+let currentAccentColor = null
 let listeners = []
 
 color.setMainColor = (coverUrl) => {
   let img = new Image()
   img.onload = () => {
     currentMainColor = colorThief.getColor(img)
+
+    /* In order to decide which of the color in the palette is the most visible,
+       we're going to compute the sum of the difference between each component.
+       This way, we'll know if the color is too similar to the main color to be
+       our accent color.
+    */
+    let colorPalette = colorThief.getPalette(img, 8)
+    for (var i = 0; i < colorPalette.length; i++) {
+      let diff = Math.abs((currentMainColor[0] - colorPalette[i][0]) + (currentMainColor[1] - colorPalette[i][1]) + (currentMainColor[2] - colorPalette[i][2]))
+
+      // 50 is a completely arbitrary number obtained from trial and error.
+      if (diff > 50) {
+        currentAccentColor = colorPalette[i]
+        break;
+      }
+    }
+
     notifyListeners()
   }
 
@@ -43,6 +61,10 @@ color.getShiftedTextColor = (percent) => {
 
   let newColor = [shiftComponent(currentMainColor[0], percent), shiftComponent(currentMainColor[1], percent), shiftComponent(currentMainColor[2], percent)]
   return rgbToHex(getTextColor(newColor))
+}
+
+color.getAccentColor = () => {
+  return currentAccentColor ? rgbToHex(currentAccentColor) : null
 }
 
 color.registerListener = (callback) => {
