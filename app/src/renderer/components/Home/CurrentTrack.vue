@@ -46,7 +46,6 @@
 import PlayerControls from './PlayerControls'
 import spotify from './../../spotify'
 import color from './../../color'
-import ProgressBar from 'progressbar.js'
 
 export default {
 	components: {
