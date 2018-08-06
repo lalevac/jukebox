@@ -12,7 +12,7 @@ const winURL = process.env.NODE_ENV === 'development'
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		height: 435,
+		height: 437,
 		width: 800,
 		title: 'Jukebox',
 		frame: false,
@@ -20,9 +20,9 @@ function createWindow() {
 		maximizable: false,
 		fullscreenable: false,
 		backgroundColor: '#2c3e50',
-        show: false
+  	show: false
 	})
-
+	
 	mainWindow.loadURL(winURL)
 
 	mainWindow.on('closed', () => {
@@ -30,9 +30,9 @@ function createWindow() {
 		console.log('Main window closed.')
 	})
 
-    mainWindow.on('ready-to-show', () => {
-        mainWindow.show()
-    })
+	mainWindow.on('ready-to-show', () => {
+			mainWindow.show()
+	})
 
 	console.log('Main window opened.')
 }
