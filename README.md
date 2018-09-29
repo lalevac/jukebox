@@ -1,8 +1,8 @@
-# Jukebox
+# jukebox
 
-> A little jukebox client.
+> A simple Spotify monitor
 
-## Build Setup
+#### Build Setup
 
 ``` bash
 # install dependencies
@@ -11,14 +11,15 @@ npm install
 # serve with hot reload at localhost:9080
 npm run dev
 
-# build electron app for production
+# build electron application for production
 npm run build
 
-# run webpack in production
-npm run pack
+
+# lint all JS/Vue component files in `src/`
+npm run lint
+
 ```
-More information can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/en/npm_scripts.html).
 
 ---
 
-This project was generated from [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about this project can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[dab4535](https://github.com/SimulatedGREG/electron-vue/tree/dab4535ddea5bb2f8cb754c117d75cc1af2d1f5b) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
