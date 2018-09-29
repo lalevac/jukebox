@@ -43,9 +43,9 @@
 </template>
 
 <script>
-import PlayerControls from './PlayerControls'
-import spotify from './../../spotify'
-import color from './../../color'
+import PlayerControls from '@/components/PlayerControls'
+import spotify from '@/spotify'
+import color from '@/color'
 
 export default {
   components: {
@@ -122,12 +122,14 @@ export default {
       if (!spotify.isLoadingDone()) { return }
 
       spotify.getMyCurrentPlayingTrack((data) => {
-        // If we have a currently playing track, we display it.
-        if (data.body.item) { this.progress_ms = data.body.progress_ms } else { this.progress_ms = 0 }
+        console.log(data)
 
-        if (!this.lastTrackSid || this.lastTrackSid !== data.body.item.id) {
-          this.lastTrackSid = data.body.item.id
-          this.onTrackChange(data.body.item)
+        // If we have a currently playing track, we display it.
+        if (data.item) { this.progress_ms = data.progress_ms } else { this.progress_ms = 0 }
+
+        if (!this.lastTrackSid || this.lastTrackSid !== data.item.id) {
+          this.lastTrackSid = data.item.id
+          this.onTrackChange(data.item)
         }
 
         this.isLoading = false

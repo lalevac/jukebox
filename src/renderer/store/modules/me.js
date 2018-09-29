@@ -1,5 +1,5 @@
 const state = {
-  main: 0
+  player: null
 }
 
 const mutations = {

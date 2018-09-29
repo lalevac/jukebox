@@ -1,6 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow, ipcMain } from 'electron'
+import { URL } from 'url'
 
 /**
  * Set `__static` path to static files in production
@@ -66,6 +67,39 @@ ipcMain.on('app:window:minimize', () => {
 
 ipcMain.on('app:window:change-title', (event, newTitle) => {
   mainWindow.setTitle(newTitle)
+})
+
+ipcMain.on('app:spotify-oauth:start', (event) => {
+  let spotifyOAuthPrompt = new BrowserWindow({
+    height: 500,
+    width: 425,
+    title: 'Spotify OAuth',
+    resizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    parent: mainWindow,
+    modal: true,
+    show: false
+  })
+
+  spotifyOAuthPrompt.loadURL('https://spotify.modonoob.net/spotify-auth/login')
+  spotifyOAuthPrompt.setMenu(null)
+  spotifyOAuthPrompt.show()
+
+  spotifyOAuthPrompt.webContents.on('did-get-redirect-request', (e, oldUrl, newUrl) => {
+    let searchParams = new URL(newUrl).searchParams
+    let accessToken = searchParams.get('a')
+    let refreshToken = searchParams.get('r')
+
+    if (accessToken == null || refreshToken == null) {
+      return
+    }
+
+    event.sender.send('app:spotify-oauth:success', { accessToken: accessToken, refreshToken: refreshToken })
+
+    spotifyOAuthPrompt.close()
+    spotifyOAuthPrompt = null
+  })
 })
 
 /**

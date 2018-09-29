@@ -3,7 +3,7 @@
     <div class='container-fluid'>
       <div class='row'>
         <div class='col-12 no-padding-horizontal'>
-          <current-track></current-track>
+          <player-current-track></player-current-track>
         </div>
       </div>
     </div>
@@ -11,11 +11,11 @@
 </template>
 
 <script>
-  import CurrentTrack from './Home/CurrentTrack'
+  import PlayerCurrentTrack from '@/components/PlayerCurrentTrack'
 
   export default {
     components: {
-      CurrentTrack
+      PlayerCurrentTrack
     }
   }
 </script>
