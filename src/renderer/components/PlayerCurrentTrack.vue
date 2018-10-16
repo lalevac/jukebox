@@ -119,8 +119,6 @@ export default {
     },
 
     updateTrackState () {
-      if (!spotify.isLoadingDone()) { return }
-
       spotify.getMyCurrentPlayingTrack((data) => {
         console.log(data)
 
@@ -142,7 +140,7 @@ export default {
     startTrackStateUpdateLoop () {
       clearInterval(this.trackStateUpdateTimer)
       this.trackStateUpdateTimer = setInterval(() => {
-        this.updateTrackState()
+        // this.updateTrackState()
       }, 1000)
     },
 

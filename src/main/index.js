@@ -1,7 +1,6 @@
 'use strict'
 
 import { app, BrowserWindow, ipcMain } from 'electron'
-import { URL } from 'url'
 
 /**
  * Set `__static` path to static files in production
@@ -86,19 +85,19 @@ ipcMain.on('app:spotify-oauth:start', (event) => {
   spotifyOAuthPrompt.setMenu(null)
   spotifyOAuthPrompt.show()
 
-  spotifyOAuthPrompt.webContents.on('did-get-redirect-request', (e, oldUrl, newUrl) => {
-    let searchParams = new URL(newUrl).searchParams
-    let accessToken = searchParams.get('a')
-    let refreshToken = searchParams.get('r')
+  spotifyOAuthPrompt.webContents.on('did-finish-load', (e) => {
+    spotifyOAuthPrompt.webContents.executeJavaScript("document.querySelectorAll('pre')[0].innerText")
+      .then((result) => {
+        const data = JSON.parse(result)
 
-    if (accessToken == null || refreshToken == null) {
-      return
-    }
+        event.sender.send('app:spotify-oauth:success', data)
 
-    event.sender.send('app:spotify-oauth:success', { accessToken: accessToken, refreshToken: refreshToken })
-
-    spotifyOAuthPrompt.close()
-    spotifyOAuthPrompt = null
+        spotifyOAuthPrompt.close()
+        spotifyOAuthPrompt = null
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   })
 })
 

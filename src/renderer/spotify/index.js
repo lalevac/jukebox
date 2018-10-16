@@ -1,158 +1,35 @@
 import { EventEmitter } from 'events'
-// import fs from 'fs'
+import request from 'request'
+import store from '@/store'
 
-const spotify = new EventEmitter()
 const SpotifyWebApi = require('spotify-web-api-js')
-
+const spotify = new EventEmitter()
 const spotifyApi = new SpotifyWebApi()
 
-spotify.loadingFinished = false
-
-spotify.setAccessToken = (accessToken) => {
-  spotifyApi.setAccessToken(accessToken)
-  spotify.loadingFinished = true
-}
-
-spotify.getMyCurrentPlayingTrack = (successCallback, errorCallback) => {
-  if (!spotify.loadingFinished) { return }
-
-  return spotifyApi.getMyCurrentPlayingTrack()
-    .then((data) => {
-      successCallback && successCallback(data)
-    })
+spotify.getMyCurrentPlayingTrack = async () => {
+  return ensureAccessTokenIsValid()
+    .then(spotifyApi.getMyCurrentPlayingTrack)
     .catch((err) => {
       console.error(err)
     })
 }
 
-spotify.pausePlayback = (successCallback, errorCallback) => {
-  if (!spotify.loadingFinished) { return }
+const ensureAccessTokenIsValid = async () => {
+  const url = `https://spotify.modonoob.net/spotify-auth/refresh?refreshToken=${store.state.global.refreshToken}`
+  const now = new Date().getTime()
 
-  return spotifyApi.pause()
-    .then(() => {
-      successCallback && successCallback()
-    }, (err) => {
-      console.error(err)
-      spotify.refreshToken()
-        .then(() => {
-          spotifyApi.pause()
-            .then(() => {
-              successCallback && successCallback()
-            }, (err) => {
-              console.error(err)
-              errorCallback && errorCallback()
-            })
-        })
+  if (now > store.state.global.expirationDate) {
+    request.get(url, (_, res) => {
+      if (res.statusCode === 200) {
+        const payload = res.body
+        store.commit('refreshToken', payload)
+        spotifyApi.setAccessToken(store.state.global.accessToken)
+        console.info('[info] Access token has been successfully refreshed.')
+      }
     })
-}
-
-spotify.resumePlayback = (successCallback, errorCallback) => {
-  if (!spotify.loadingFinished) { return }
-
-  return spotifyApi.play()
-    .then(() => {
-      successCallback && successCallback()
-    }, (err) => {
-      console.error(err)
-      spotify.refreshToken()
-        .then(() => {
-          spotifyApi.play()
-            .then(() => {
-              successCallback && successCallback()
-            }, (err) => {
-              console.error(err)
-              errorCallback && errorCallback()
-            })
-        })
-    })
-}
-
-spotify.previous = (successCallback, errorCallback) => {
-  if (!spotify.loadingFinished) { return }
-
-  return spotifyApi.skipToPrevious()
-    .then(() => {
-      successCallback && successCallback()
-    }, (err) => {
-      console.error(err)
-      spotify.refreshToken()
-        .then(() => {
-          spotifyApi.skipToPrevious()
-            .then(() => {
-              successCallback && successCallback()
-            }, (err) => {
-              console.error(err)
-              errorCallback && errorCallback()
-            })
-        })
-    })
-}
-
-spotify.next = (successCallback, errorCallback) => {
-  if (!spotify.loadingFinished) { return }
-
-  return spotifyApi.skipToNext()
-    .then(() => {
-      successCallback && successCallback()
-    }, (err) => {
-      console.error(err)
-      spotify.refreshToken()
-        .then(() => {
-          spotifyApi.skipToNext()
-            .then(() => {
-              successCallback && successCallback()
-            }, (err) => {
-              console.error(err)
-              errorCallback && errorCallback()
-            })
-        })
-    })
-}
-
-spotify.setShuffle = (state, successCallback, errorCallback) => {
-  if (!spotify.loadingFinished) { return }
-
-  return spotifyApi.setShuffle(state)
-    .then(() => {
-      successCallback && successCallback()
-    }, (err) => {
-      console.error(err)
-      spotify.refreshToken()
-        .then(() => {
-          spotifyApi.setShuffle(state)
-            .then(() => {
-              successCallback && successCallback()
-            }, (err) => {
-              console.error(err)
-              errorCallback && errorCallback()
-            })
-        })
-    })
-}
-
-spotify.setRepeat = (state, successCallback, errorCallback) => {
-  if (!spotify.loadingFinished) { return }
-
-  return spotifyApi.setRepeat(state)
-    .then(() => {
-      successCallback && successCallback()
-    }, (err) => {
-      console.error(err)
-      spotify.refreshToken()
-        .then(() => {
-          spotifyApi.setRepeat(state)
-            .then(() => {
-              successCallback && successCallback()
-            }, (err) => {
-              console.error(err)
-              errorCallback && errorCallback()
-            })
-        })
-    })
-}
-
-spotify.isLoadingDone = () => {
-  return spotify.loadingFinished
+  } else {
+    spotifyApi.setAccessToken(store.state.global.accessToken)
+  }
 }
 
 export default spotify
