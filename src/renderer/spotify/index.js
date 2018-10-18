@@ -7,11 +7,8 @@ const spotify = new EventEmitter()
 const spotifyApi = new SpotifyWebApi()
 
 spotify.getMyCurrentPlayingTrack = async () => {
-  return ensureAccessTokenIsValid()
-    .then(spotifyApi.getMyCurrentPlayingTrack)
-    .catch((err) => {
-      console.error(err)
-    })
+  await ensureAccessTokenIsValid()
+  return spotifyApi.getMyCurrentPlayingTrack()
 }
 
 const ensureAccessTokenIsValid = async () => {
@@ -21,7 +18,7 @@ const ensureAccessTokenIsValid = async () => {
   if (now > store.state.global.expirationDate) {
     request.get(url, (_, res) => {
       if (res.statusCode === 200) {
-        const payload = res.body
+        const payload = JSON.parse(res.body)
         store.commit('refreshToken', payload)
         spotifyApi.setAccessToken(store.state.global.accessToken)
         console.info('[info] Access token has been successfully refreshed.')
