@@ -8,6 +8,7 @@
 <script>
   import 'bootstrap/dist/css/bootstrap.css'
   import 'bootstrap-vue/dist/bootstrap-vue.css'
+  import 'font-awesome/css/font-awesome.css'
 
   import { ipcRenderer } from 'electron'
   import AppTitleBarWindows from '@/components/AppTitleBarWindows'
@@ -35,6 +36,6 @@
 <style lang='scss'>
   body,
   html {
-      overflow: hidden;
+    overflow: hidden;
   }
 </style>

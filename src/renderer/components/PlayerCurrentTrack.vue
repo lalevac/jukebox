@@ -118,29 +118,28 @@ export default {
       spotify.resumePlayback()
     },
 
-    updateTrackState () {
-      spotify.getMyCurrentPlayingTrack((data) => {
-        console.log(data)
+    async updateTrackState () {
+      const data = await spotify.getMyCurrentPlayingTrack()
 
-        // If we have a currently playing track, we display it.
-        if (data.item) { this.progress_ms = data.progress_ms } else { this.progress_ms = 0 }
-
-        if (!this.lastTrackSid || this.lastTrackSid !== data.item.id) {
-          this.lastTrackSid = data.item.id
-          this.onTrackChange(data.item)
-        }
-
-        this.isLoading = false
-      }, () => {
-        this.onTrackChange(null)
+      // If we have a currently playing track, we display it.
+      if (data.item) {
+        this.progress_ms = data.progress_ms
+      } else {
         this.progress_ms = 0
-      })
+      }
+
+      if (!this.lastTrackSid || this.lastTrackSid !== data.item.id) {
+        this.lastTrackSid = data.item.id
+        this.onTrackChange(data.item)
+      }
+
+      this.isLoading = false
     },
 
     startTrackStateUpdateLoop () {
       clearInterval(this.trackStateUpdateTimer)
       this.trackStateUpdateTimer = setInterval(() => {
-        // this.updateTrackState()
+        this.updateTrackState()
       }, 1000)
     },
 
